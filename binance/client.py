@@ -606,7 +606,7 @@ class Client(object):
         """
         return self._get('aggTrades', data=params)
 
-    def aggregate_trade_iter(self, symbol, start_str=None, last_id=None):
+    def aggregate_trade_iter(self, symbol, start_str=None, last_id=None, limit=500):
         """Iterate over aggregate trade data from (start_time or last_id) to
         the end of the history so far.
 
@@ -646,7 +646,7 @@ class Client(object):
             # Without a last_id, we actually need the first trade.  Normally,
             # we'd get rid of it. See the next loop.
             if start_str is None:
-                trades = self.get_aggregate_trades(symbol=symbol, fromId=0)
+                trades = self.get_aggregate_trades(symbol=symbol, fromId=0, limit=limit)
             else:
                 # The difference between startTime and endTime should be less
                 # or equal than an hour and the result set should contain at
@@ -663,7 +663,8 @@ class Client(object):
                     trades = self.get_aggregate_trades(
                         symbol=symbol,
                         startTime=start_ts,
-                        endTime=end_ts)
+                        endTime=end_ts,
+                        limit=limit)
                     if len(trades) > 0:
                         break
                     # If we reach present moment and find no trades then there is
